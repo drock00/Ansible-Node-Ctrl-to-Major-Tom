@@ -1,0 +1,6 @@
+setpass_rh: echo password | passwd --stdin ansible
+setpass_ub: echo ansible:password | chpasswd
+installpy_rh: "yum install -y python3; yum install -y python3-pip;alternatives --set python /usr/bin/python3"
+installpy_ub: "apt install -y python3; apt install -y python3-pip; update-alternatives --install /usr/bin/python /usr/bin/python3.6 10"
+pubkey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDOQCZqnmSafNf9qJLFcOA3LLBJ2c2gYymYVhvZL5QpLhM8+ZhdVgGcj5KW+AVFvakMl/STxR/2Wn5OZeAnDFgXJBphcaZ1lNUKbvSTj/740Yv1tLhQeYDph88345vnewfGFVDjwILCYUZz77ZBIl4kmxje+4ZQQgy21ogXyM0bu28lCOJz5Bke/SK0xJzZTTvpt5E9CO18d37OsL4SNMBs4SKEZdZlg/1z3ZCXDlHyL+1LIj464mW5qKRuqS+hGbuBzg/dkrnCzaZB+6TSbiOaVmhe8W1zKe8hsS94RUB5QZpX92n0J8IQjFAhjnnLFJMRL1NLSgey+kgjecbL6XETVLthH/2TLoGr/eBcWzSEV0FSHE8C06QNjcoe4AgTwZMCwxep4eKtggNCflzfkWwRxnPxjMDZc8DlgzGOCUW53Ds44PFkR29bo5b8LzUNvVY4Zf2aAbuejOu01+d9k+XNJQzxYws5xxL1AseWdPkyzEBOyqInm5hR8OXckJ6XOyE= ansible@control.example.com
+lastoctet: nmcli|grep "inet4 10.0"|cut -f 1 -d "/"|cut -f 2 -d " "|cut -f 4 -d "."

@@ -1,0 +1,45 @@
+#Derek Calzadillas Was Here
+---
+- name: set up machines using root shh
+  hosts: all
+  vars_files:
+    - vars/defaults.yml
+  tasks:
+    - name: check register file to see if user ansible exists
+      raw: "cat /etc/passwd"
+      register: result
+    - name: create user ansible
+      raw: "useradd ansible"
+      when: "'ansible' not in result.stdout"
+    - name: set password for user ansible on RH
+      raw: "{{setpass_rh}}"
+      when: ansible_distribution == "RedHat"
+    - name: set password for user ansible on Ubuntu
+      raw: "{{setpass_ub}}"
+      when: ansible_distribution == "Ubuntu"
+    - name: add user to sudoers
+      raw:  "echo 'ansible ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/ansible"
+    - name: check if .ssh directory exists
+      raw:  "ls -la /home/ansible"
+      register: result2
+    - name: create .ssh directory for user ansible
+      raw: "mkdir /home/ansible/.ssh"
+      when: "'.ssh' not in result2.stdout"
+    - name: add ctrl ssh pub key to authorized keys
+      raw: "echo {{pubkey}} > /home/ansible/.ssh/authorized_keys"
+    - name: set up python3|pip on remote RH nodes
+      raw: "{{installpy_rh}}"
+      when: ansible_distribution == "RedHat" 
+    - name: set up python3|pip on remote Ubuntu nodes
+      raw: "{{installpy_ub}}"
+      when: ansible_distribution == "Ubuntu"
+    - name: save the last octet of the ip
+      shell: nmcli|grep "inet4 10.0"|cut -f 1 -d "/"|cut -f 2 -d " "|cut -f 4 -d "."
+      register: result
+    - name: set hostname by last ip octect
+      raw: hostnamectl set-hostname ansible{{result.stdout}}.example.com
+    - name: set hostname pretty by last ip octect
+      raw: hostnamectl set-hostname ansible{{result.stdout}} --pretty
+    - name: reboot the machines
+      reboot:
+        msg: Rebooting machines
