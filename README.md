@@ -11,7 +11,7 @@ Node control? No problem! Warning: this is an especially cheesy readme. Login to
 
 # Example Run
 ```sh
-$ ansible-playbook all setup.yml -k
+$ ansible-playbook setup.yml -k
 SSH password: 214lovemuffin
 ```
 
